@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 export interface CommonBtnProps {
   text: string;
   type?: 'button' | 'submit' | 'reset';
@@ -20,4 +21,10 @@ export interface RegisterInputProps {
   placeholder?: string;
   autoFocus?: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+export interface LayoutProps {
+  children: ReactNode;
+  outerClassName?: string;
+  sidebarClassName?: string;
 }
