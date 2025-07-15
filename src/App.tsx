@@ -1,30 +1,32 @@
-import { useState } from "react";
-import CommonInput from "./components/commons/commomInput";
-import CommonBtn from "./components/commons/commonBtn";
-import MainPage from "./assets/pages/mainPage";
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import MainPage from './assets/pages/mainPage';
+import Login from './assets/pages/loginPage';
+import Signup from './assets/pages/signupPage';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
-  const [value, setValue] = useState("");
-  const testOnClick = () => {
-    console.log("Button clicked!");
-  };
-  const testOnchange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value);
-    setValue(e.target.value);
-  };
-
   return (
-    <><div className="flex">
-      <div className="flex gap-4 bg-white-100">
-        <MainPage />
-      </div>
-      <div className="flex">
-        <CommonBtn onClick={testOnClick} text={"asdasd"} />
-        <CommonInput onChange={testOnchange} placeholder="테스트용" value={value}/>
-      </div>
-      </div>
-     
-
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<MainPage />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/signup' element={<Signup />} />
+        </Routes>
+      </BrowserRouter>
+      <ToastContainer
+        position='top-right'
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme='light'
+      />
     </>
   );
 }
