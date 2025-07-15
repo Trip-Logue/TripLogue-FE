@@ -10,3 +10,21 @@ export interface CommonInputProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
 }
+
+export interface MarkerInfo {
+  id: string;
+  marker: google.maps.Marker;
+  name: string;
+}
+
+export interface PlaceInfo {
+  name: string;
+  location: google.maps.LatLng;
+  date: string;
+  memo: string;
+}
+
+export type MyMapProps = {
+  mapRef: React.RefObject<google.maps.Map | null>;
+  places: PlaceInfo[];
+};

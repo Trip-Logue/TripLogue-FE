@@ -1,31 +1,21 @@
-import { useState } from "react";
-import CommonInput from "./components/commons/commomInput";
-import CommonBtn from "./components/commons/commonBtn";
-import MainPage from "./assets/pages/mainPage";
+import { Status, Wrapper } from "@googlemaps/react-wrapper";
+import MainCompo from "./components/map/mainCompo";
+
+const render = (status: Status) => {
+  if (status === Status.LOADING) return <div>로딩중...</div>;
+  if (status === Status.FAILURE) return <div>로딩 실패</div>;
+  return <MainCompo />;
+};
 
 function App() {
-  const [value, setValue] = useState("");
-  const testOnClick = () => {
-    console.log("Button clicked!");
-  };
-  const testOnchange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value);
-    setValue(e.target.value);
-  };
+  const mapApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
   return (
-    <><div className="flex">
-      <div className="flex gap-4 bg-white-100">
-        <MainPage />
-      </div>
-      <div className="flex">
-        <CommonBtn onClick={testOnClick} text={"asdasd"} />
-        <CommonInput onChange={testOnchange} placeholder="테스트용" value={value}/>
-      </div>
-      </div>
-     
-
-    </>
+    <Wrapper
+      apiKey={mapApiKey}
+      render={render}
+      libraries={["places"]}
+    ></Wrapper>
   );
 }
 
