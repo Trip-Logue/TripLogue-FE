@@ -6,6 +6,7 @@ import { useRoute } from '@/hooks/useRoute';
 import { toast } from 'react-toastify';
 import CommonBtn from '@/components/commons/commonBtn';
 import RegisterInput from '@/components/commons/registerInput';
+import Layout from '@/layouts/layout';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -46,12 +47,7 @@ function Login() {
   };
 
   return (
-    <div className='flex w-full h-full justify-center items-center'>
-      <div className='flex flex-col gap-4 bg-white'>
-        <SidebarProvider>
-          <MainSidebar />
-        </SidebarProvider>
-      </div>
+    <Layout outerClassName='justify-center items-center'>
       <div>
         <form
           onSubmit={handleLogin}
@@ -86,7 +82,7 @@ function Login() {
             onClick={routeToSignup}></CommonBtn>
         </p>
       </div>
-    </div>
+    </Layout>
   );
 }
 
