@@ -32,7 +32,6 @@ export default function MainCompo() {
 
       <MyMap mapRef={mapRef} places={places} />
 
-      {/* 장소 리스트 출력 */}
       <div className="mt-4 p-2 border-t">
         <h3 className="text-lg font-bold mb-2">최근 선택한 장소</h3>
         <ul className="text-sm space-y-1">

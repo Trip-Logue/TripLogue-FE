@@ -26,11 +26,9 @@ export default function MyMap({ mapRef, places }: MyMapProps) {
   useEffect(() => {
     if (!places || !mapInstance.current) return;
 
-    // 기존 마커 모두 제거
     markers.current.forEach((marker) => marker.setMap(null));
     markers.current.clear();
 
-    // 새로 받은 places로 마커 생성
     places.forEach((place) => {
       const id = crypto.randomUUID();
       const marker = new google.maps.Marker({
@@ -44,7 +42,7 @@ export default function MyMap({ mapRef, places }: MyMapProps) {
           <div style="max-width: 200px">
             <h1>${place.name}</h1>
             <h2>${place.date}</h2>
-            <button id="delete-${id}"  className="text-red-400" >삭제</button>        
+            <button id="delete-${id}" className="text-red-400" >삭제</button>        
         </div>`,
       });
 
