@@ -1,5 +1,7 @@
-import { MainSidebar } from './mainSidebar';
-import { SidebarProvider } from '@/components/ui/sidebar';
+
+import { MainSidebar } from "./mainSidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import MainMap from "@/components/map/mainMap";
 import CommonBtn from '@/components/commons/commonBtn';
 import { useRoute } from '@/hooks/useRoute';
 
