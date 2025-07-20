@@ -14,6 +14,7 @@ function MainPage() {
         <div className='flex flex-col gap-4 bg-white-100'>
           <SidebarProvider>
             <MainSidebar />
+            <MainMap />
           </SidebarProvider>
         </div>
         <div className='flex-1 flex justify-end p-4 gap-2'>
