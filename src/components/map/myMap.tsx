@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import type { PlaceInfo } from "@/types";
+import { getInfoWindowContent } from "./popupHTML";
 
 interface MyMapProps {
   mapRef: React.RefObject<google.maps.Map | null>;
@@ -38,12 +39,12 @@ export default function MyMap({ mapRef, places }: MyMapProps) {
       });
 
       const infoWindow = new google.maps.InfoWindow({
-        content: `
-          <div style="max-width: 200px">
-            <h1>${place.name}</h1>
-            <h2>${place.date}</h2>
-            <button id="delete-${id}" className="text-red-400" >삭제</button>        
-        </div>`,
+        content: getInfoWindowContent({
+          id,
+          title: place.title,
+          date: place.date,
+          memo: place.memo,
+        }),
       });
 
       marker.addListener("click", () => {
@@ -65,5 +66,5 @@ export default function MyMap({ mapRef, places }: MyMapProps) {
     });
   }, [places]);
 
-  return <div ref={containerRef} style={{ width: "100%", height: "500px" }} />;
+  return <div ref={containerRef} style={{ width: "100%", height: "100vh" }} />;
 }

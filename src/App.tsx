@@ -1,10 +1,10 @@
 import { Status, Wrapper } from "@googlemaps/react-wrapper";
-import MainCompo from "./components/map/mainCompo";
+import MainPage from "./assets/pages/mainPage";
 
 const render = (status: Status) => {
   if (status === Status.LOADING) return <div>로딩중...</div>;
   if (status === Status.FAILURE) return <div>로딩 실패</div>;
-  return <MainCompo />;
+  return <MainPage />;
 };
 
 function App() {

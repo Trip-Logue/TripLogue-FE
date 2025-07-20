@@ -6,9 +6,10 @@ export interface CommonBtnProps {
 
 export interface CommonInputProps {
   placeholder: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
+  type?: string;
 }
 
 export interface MarkerInfo {
@@ -22,9 +23,26 @@ export interface PlaceInfo {
   location: google.maps.LatLng;
   date: string;
   memo: string;
+  title: string; // 제목 필드 추가
 }
 
 export type MyMapProps = {
   mapRef: React.RefObject<google.maps.Map | null>;
   places: PlaceInfo[];
 };
+
+export interface RecordModalProps {
+  open: boolean;
+  onClose: () => void;
+  onSubmit: (data: { title: string; date: string; memo: string }) => void;
+  selectedPlace: { name: string } | null;
+}
+
+export interface PlaceAutocompleteProps {
+  onPlaceSelect: (place: google.maps.places.PlaceResult) => void;
+}
+
+export interface SearchBarProps {
+  onSearch: (place: google.maps.places.PlaceResult) => void;
+  className : string;
+}

@@ -1,13 +1,12 @@
 import Autocomplete from "./autoComplete";
+import type {SearchBarProps} from "@/types"
 
 export default function SearchBar({
-  onSearch,
-}: {
-  onSearch: (place: google.maps.places.PlaceResult) => void;
-}) {
+  onSearch, className
+}:   SearchBarProps) {
   return (
-    <div className="mb-4">
-      <Autocomplete onPlaceSelect={onSearch} />
+    <div className={className} >
+      <Autocomplete onPlaceSelect={onSearch} /> 
     </div>
   );
 }
