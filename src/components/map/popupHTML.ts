@@ -1,17 +1,25 @@
 // src/components/map/popupHTML.ts
 export function getInfoWindowContent({
-    id, title, date, memo, imageUrl
-  }: {
-    id: string;
-    title: string;
-    date: string;
-    memo: string;
-    imageUrl?: string;
-  }) {
-    return `
+  id,
+  title,
+  date,
+  memo,
+  imageUrl,
+}: {
+  id: string;
+  title: string;
+  date: string;
+  memo: string;
+  imageUrl?: string;
+}) {
+  return `
       <div style="background: white; border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); padding: 24px; min-width: 240px; max-width: 340px; display: flex; flex-direction: column; align-items: center;">
         <div style="width: 200px; height: 100px; background: #eee; border-radius: 10px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center;">
-          ${imageUrl ? `<img src="${imageUrl}" style="max-width: 100%; max-height: 100%; border-radius: 10px;" />` : ""}
+          ${
+            imageUrl
+              ? `<img src="${imageUrl}" style="max-width: 100%; max-height: 100%; border-radius: 10px;" />`
+              : ''
+          }
         </div>
         <div style="width: 100%; margin-bottom: 10px;">
           <div style="font-size: 1.1rem; font-weight: bold;">${title}</div>
@@ -31,4 +39,4 @@ export function getInfoWindowContent({
         </div>
       </div>
     `;
-  }
+}

@@ -1,6 +1,6 @@
-import { useEffect, useRef } from "react";
-import type { PlaceInfo } from "@/types";
-import { getInfoWindowContent } from "./popupHTML";
+import { useEffect, useRef } from 'react';
+import type { PlaceInfo } from '@/types';
+import { getInfoWindowContent } from './popupHTML';
 
 interface MyMapProps {
   mapRef: React.RefObject<google.maps.Map | null>;
@@ -47,15 +47,15 @@ export default function MyMap({ mapRef, places }: MyMapProps) {
         }),
       });
 
-      marker.addListener("click", () => {
+      marker.addListener('click', () => {
         infoWindow.open({
           anchor: marker,
           map: mapInstance.current!,
         });
 
-        google.maps.event.addListenerOnce(infoWindow, "domready", () => {
+        google.maps.event.addListenerOnce(infoWindow, 'domready', () => {
           const btn = document.getElementById(`delete-${id}`);
-          btn?.addEventListener("click", () => {
+          btn?.addEventListener('click', () => {
             marker.setMap(null);
             markers.current.delete(id);
           });
@@ -66,5 +66,5 @@ export default function MyMap({ mapRef, places }: MyMapProps) {
     });
   }, [places]);
 
-  return <div ref={containerRef} style={{ width: "100%", height: "100vh" }} />;
+  return <div ref={containerRef} style={{ width: '100%', height: '100vh' }} />;
 }

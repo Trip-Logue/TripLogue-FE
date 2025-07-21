@@ -1,13 +1,16 @@
-import { Status, Wrapper } from "@googlemaps/react-wrapper";
+import { Status, Wrapper } from '@googlemaps/react-wrapper';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
+import { PuffLoader } from 'react-spinners';
 import MainPage from './assets/pages/mainPage';
 import Login from './assets/pages/loginPage';
 import Signup from './assets/pages/signupPage';
+import MyPage from './assets/pages/myPage';
 import 'react-toastify/dist/ReactToastify.css';
 
 const render = (status: Status) => {
-  if (status === Status.LOADING) return <div>로딩중...</div>;
+  if (status === Status.LOADING)
+    return <PuffLoader color='#2469fc' loading size={150} speedMultiplier={1} />;
   if (status === Status.FAILURE) return <div>로딩 실패</div>;
   return <MainPage />;
 };
@@ -17,13 +20,6 @@ function App() {
 
   return (
     <>
-      <BrowserRouter>
-        <Routes>
-          <Route path='/' element={<MainPage />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/signup' element={<Signup />} />
-        </Routes>
-      </BrowserRouter>
       <ToastContainer
         position='top-right'
         autoClose={2000}
@@ -36,11 +32,16 @@ function App() {
         pauseOnHover
         theme='light'
       />
-      <Wrapper
-      apiKey={mapApiKey}
-      render={render}
-      libraries={["places"]}
-    ></Wrapper>
+      <Wrapper apiKey={mapApiKey} render={render} libraries={['places']}>
+        <BrowserRouter>
+          <Routes>
+            <Route path='/' element={<MainPage />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/signup' element={<Signup />} />
+            <Route path='/mypage' element={<MyPage />}></Route>
+          </Routes>
+        </BrowserRouter>
+      </Wrapper>
     </>
   );
 }
