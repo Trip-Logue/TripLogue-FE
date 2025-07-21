@@ -10,6 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@googlemaps/extended-component-library": "^0.6.14",
+    "@googlemaps/js-api-loader": "^1.16.10",
+    "@googlemaps/react-wrapper": "^1.2.0",
     "@radix-ui/react-dialog": "^1.1.14",
     "@radix-ui/react-separator": "^1.1.7",
     "@radix-ui/react-slot": "^1.2.3",
@@ -27,9 +30,11 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.29.0",
+    "@types/google.maps": "^3.58.1",
     "@types/node": "^24.0.10",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
+    "@vis.gl/react-google-maps": "^1.5.4",
     "@vitejs/plugin-react": "^4.5.2",
     "eslint": "^9.29.0",
     "eslint-plugin-react-hooks": "^5.2.0",
