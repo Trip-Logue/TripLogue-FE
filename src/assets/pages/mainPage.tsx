@@ -2,7 +2,6 @@ import MainMap from "@/components/map/mainMap";
 import CommonBtn from '@/components/commons/commonBtn';
 import { useRoute } from '@/hooks/useRoute';
 import Layout from '@/layouts/layout';
-import CommonBtn from '@/components/commons/commonBtn';
 
 function MainPage() {
   const { routeToLogin, routeToSignup } = useRoute();
