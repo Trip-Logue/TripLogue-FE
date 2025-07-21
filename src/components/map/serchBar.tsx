@@ -1,12 +1,10 @@
-import Autocomplete from "./autoComplete";
-import type {SearchBarProps} from "@/types"
+import Autocomplete from './autoComplete';
+import type { SearchBarProps } from '@/types';
 
-export default function SearchBar({
-  onSearch, className
-}:   SearchBarProps) {
+export default function SearchBar({ onSearch, className }: SearchBarProps) {
   return (
-    <div className={className} >
-      <Autocomplete onPlaceSelect={onSearch} /> 
+    <div className={className}>
+      <Autocomplete onPlaceSelect={onSearch} />
     </div>
   );
 }

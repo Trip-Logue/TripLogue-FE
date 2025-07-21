@@ -1,4 +1,4 @@
-import MainMap from "@/components/map/mainMap";
+import MainMap from '@/components/map/mainMap';
 import CommonBtn from '@/components/commons/commonBtn';
 import { useRoute } from '@/hooks/useRoute';
 import Layout from '@/layouts/layout';
@@ -10,7 +10,7 @@ function MainPage() {
     <>
       <Layout>
         <MainMap />
-        <div className='flex-1 flex justify-end p-4 gap-2'>
+        <div className='flex-1 flex justify-end p-4 gap-2 absolute right-10'>
           <CommonBtn
             onClick={routeToLogin}
             text='로그인'
