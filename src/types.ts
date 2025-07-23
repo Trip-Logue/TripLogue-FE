@@ -27,6 +27,7 @@ export interface PlaceInfo {
   date: string;
   memo: string;
   title: string; // 제목 필드 추가
+  country?: string; // 나라 이름 필드 추가 (마이페이지 차트 활용 위함)
 }
 
 export type MyMapProps = {
@@ -47,7 +48,7 @@ export interface PlaceAutocompleteProps {
 
 export interface SearchBarProps {
   onSearch: (place: google.maps.places.PlaceResult) => void;
-  className : string;
+  className: string;
 }
 
 export interface RegisterInputProps {
@@ -64,4 +65,36 @@ export interface LayoutProps {
   children: ReactNode;
   outerClassName?: string;
   sidebarClassName?: string;
+}
+
+export interface WithdrawalModalProps {
+  onClose: () => void;
+}
+
+export interface UserProfileSectionProps {
+  openEditProfile: () => void;
+}
+
+export interface AccountSettingsSectionProps {
+  openChangePassword: () => void;
+  openWithdrawal: () => void;
+}
+
+export type TripCardProps = {
+  title: string;
+  date?: string;
+  description?: string;
+};
+
+export interface UserProfileSectionProps {
+  openEditProfile: () => void;
+  profileImageUrl?: string | null;
+  userName: string;
+}
+
+export interface EditProfileModalProps {
+  onClose: () => void;
+  onProfileUpdate?: (newNickname: string, newProfileImageUrl: string | null) => void;
+  currentNickname: string;
+  currentProfileImageUrl: string | null;
 }

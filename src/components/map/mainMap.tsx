@@ -10,11 +10,24 @@ export default function MainMap() {
   const [places, setPlaces] = useState<PlaceInfo[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState<google.maps.places.PlaceResult | null>(null);
+  const [selectedCountry, setSelectedCountry] = useState<string | undefined>(undefined);
 
   const handleSearch = (place: google.maps.places.PlaceResult) => {
     if (!mapRef.current) return;
     const location = place.geometry?.location;
     if (!location) return;
+
+    let countryName: string | undefined;
+    if (place.address_components) {
+      for (const component of place.address_components) {
+        if (component.types.includes('country')) {
+          countryName = component.long_name;
+          break;
+        }
+      }
+    }
+
+    setSelectedCountry(countryName);
     setSelectedPlace(place);
     setModalOpen(true);
     mapRef.current?.panTo(location);
@@ -37,6 +50,7 @@ export default function MainMap() {
       date,
       memo,
       title,
+      country: selectedCountry,
     };
     setPlaces((prev) => [...prev, newPlace]);
     setModalOpen(false);

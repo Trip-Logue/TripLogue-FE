@@ -1,7 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MainSidebar } from './mainSidebar';
-import { SidebarProvider } from '@/components/ui/sidebar';
 import { useRoute } from '@/hooks/useRoute';
 import { toast } from 'react-toastify';
 import CommonBtn from '@/components/commons/commonBtn';
