@@ -1,11 +1,10 @@
-// src/components/Signup.tsx (또는 Signup.jsx)
 import { useState, useRef } from 'react';
 import { useRoute } from '@/hooks/useRoute';
 import { toast } from 'react-toastify';
 import CommonBtn from '@/components/commons/commonBtn';
 import RegisterInput from '@/components/commons/registerInput';
 import Layout from '@/layouts/layout';
-import { User } from 'lucide-react'; // lucide-react에서 User 아이콘 임포트
+import { User } from 'lucide-react';
 
 const strictEmailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -18,7 +17,7 @@ function Signup() {
   const [passwordCheck, setPasswordCheck] = useState('');
   const [emailError, setEmailError] = useState('');
   const [profileImage, setProfileImage] = useState<File | null>(null);
-  const [previewImageUrl, setPreviewImageUrl] = useState<string>(''); // 기본 이미지 URL 제거
+  const [previewImageUrl, setPreviewImageUrl] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const { routeToLogin } = useRoute();
@@ -58,7 +57,7 @@ function Signup() {
       reader.readAsDataURL(file);
     } else {
       setProfileImage(null);
-      setPreviewImageUrl(''); // 파일 선택 취소 시 미리보기 URL 초기화
+      setPreviewImageUrl('');
     }
   };
 
@@ -128,15 +127,13 @@ function Signup() {
           <div
             className='relative w-24 h-24 rounded-full overflow-hidden bg-[#E5E7EB] m-auto mb-4 cursor-pointer flex items-center justify-center'
             onClick={handleProfileImageClick}>
-            {/* lucide-react의 User 아이콘 표시 */}
             <User className='text-gray-600 text-xl' />
-            {/* 선택된 이미지가 있을 때만 img 태그로 미리보기 표시 */}
             {previewImageUrl && (
               <img
                 src={previewImageUrl}
                 alt='프로필 미리보기'
-                className='absolute inset-0 w-full h-full object-cover' // absolute inset-0로 부모 div를 완전히 덮도록 설정
-                onError={() => setPreviewImageUrl('')} // 이미지 로드 실패 시 미리보기 URL 초기화
+                className='absolute inset-0 w-full h-full object-cover'
+                onError={() => setPreviewImageUrl('')}
               />
             )}
             <input
