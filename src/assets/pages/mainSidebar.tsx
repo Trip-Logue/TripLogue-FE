@@ -20,7 +20,7 @@ const items = [
   },
   {
     title: '사진 모아보기',
-    url: 'allphoto',
+    url: 'photogallery',
     icon: Image,
   },
   {

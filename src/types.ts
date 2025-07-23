@@ -98,3 +98,31 @@ export interface EditProfileModalProps {
   currentNickname: string;
   currentProfileImageUrl: string | null;
 }
+
+export interface ArrowProps {
+  className?: string;
+  style?: React.CSSProperties;
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
+}
+
+export interface Photo {
+  id: string;
+  src: string;
+  title: string;
+  date: string;
+  location: string;
+  tags: string[];
+  isFavorite: boolean;
+  description?: string;
+}
+
+export interface PhotoDetailModalProps {
+  photo: Photo;
+  onClose: () => void;
+  onPrev: () => void;
+  onNext: () => void;
+  hasPrev: boolean;
+  hasNext: boolean;
+  toggleFavorite: (id: string) => void;
+  onDelete: (id: string) => void;
+}
