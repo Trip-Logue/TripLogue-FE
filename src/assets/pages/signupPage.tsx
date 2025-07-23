@@ -1,9 +1,11 @@
-import { useState } from 'react';
+// src/components/Signup.tsx (또는 Signup.jsx)
+import { useState, useRef } from 'react';
 import { useRoute } from '@/hooks/useRoute';
 import { toast } from 'react-toastify';
 import CommonBtn from '@/components/commons/commonBtn';
 import RegisterInput from '@/components/commons/registerInput';
 import Layout from '@/layouts/layout';
+import { User } from 'lucide-react'; // lucide-react에서 User 아이콘 임포트
 
 const strictEmailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -15,15 +17,16 @@ function Signup() {
   const [password, setPassword] = useState('');
   const [passwordCheck, setPasswordCheck] = useState('');
   const [emailError, setEmailError] = useState('');
+  const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [previewImageUrl, setPreviewImageUrl] = useState<string>(''); // 기본 이미지 URL 제거
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const { routeToLogin } = useRoute();
 
-  // 이메일 실시간 유효성 검사
   const handleUserIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setUserId(val);
 
-    // 도메인까지 같이 확인해야 하니 전체 이메일 조합 후 검사
     const emailToCheck = `${val}@${emailDomain === 'write' ? customDomain : emailDomain}`;
     if (strictEmailRegex.test(emailToCheck)) {
       setEmailError('');
@@ -44,13 +47,32 @@ function Signup() {
     }
   };
 
-  //폼 제출 핸들러
+  const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setProfileImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImageUrl(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setProfileImage(null);
+      setPreviewImageUrl(''); // 파일 선택 취소 시 미리보기 URL 초기화
+    }
+  };
+
+  const handleProfileImageClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const fullEmail = `${userId}@${emailDomain === 'write' ? customDomain : emailDomain}`;
 
-    // 유효성 검사
     if (!name || !userId || !password || !passwordCheck) {
       toast.error('모든 항목을 입력해주세요.');
       return;
@@ -71,15 +93,19 @@ function Signup() {
       return;
     }
 
-    console.log('회원가입 정보:');
-    console.log('이름:', name);
-    console.log('이메일:', fullEmail);
-    console.log('비밀번호:', password);
-    console.log('비밀번호 확인:', passwordCheck);
-
     try {
-      // 서버 연동 대신 더미 처리
-      // 실제로는 axios.post('/signup', { name, email: fullEmail, password })
+      // 실제 서버 연동 시 FormData를 사용하여 이미지 파일 전송
+      // const formData = new FormData();
+      // formData.append('name', name);
+      // formData.append('email', fullEmail);
+      // formData.append('password', password);
+      // if (profileImage) {
+      //   formData.append('profileImage', profileImage);
+      // }
+      // await axios.post('/signup', formData, {
+      //   headers: { 'Content-Type': 'multipart/form-data' },
+      // });
+
       await new Promise((r) => setTimeout(r, 1000)); // 더미 대기
 
       toast.success('회원가입이 완료되었습니다!');
@@ -97,6 +123,30 @@ function Signup() {
           onSubmit={handleSubmit}
           className='flex border flex-col rounded-xl p-9 bg-[#FAFAF9] w-auto h-auto'>
           <h1 className='m-auto pl-2 pr-2 pb-4 font-bold text-2xl '>회원가입</h1>
+
+          {/* 프로필 이미지 미리보기 및 선택 */}
+          <div
+            className='relative w-24 h-24 rounded-full overflow-hidden bg-[#E5E7EB] m-auto mb-4 cursor-pointer flex items-center justify-center'
+            onClick={handleProfileImageClick}>
+            {/* lucide-react의 User 아이콘 표시 */}
+            <User className='text-gray-600 text-xl' />
+            {/* 선택된 이미지가 있을 때만 img 태그로 미리보기 표시 */}
+            {previewImageUrl && (
+              <img
+                src={previewImageUrl}
+                alt='프로필 미리보기'
+                className='absolute inset-0 w-full h-full object-cover' // absolute inset-0로 부모 div를 완전히 덮도록 설정
+                onError={() => setPreviewImageUrl('')} // 이미지 로드 실패 시 미리보기 URL 초기화
+              />
+            )}
+            <input
+              type='file'
+              accept='image/*'
+              onChange={handleProfileImageChange}
+              className='hidden'
+              ref={fileInputRef}
+            />
+          </div>
 
           <label htmlFor='name'>이름</label>
           <RegisterInput
