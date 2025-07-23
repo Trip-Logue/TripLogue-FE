@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import TripCard from '@/components/commons/tripCard';
+import TripCard from '@/components/myPage/tripCard';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const dummyTrips = [

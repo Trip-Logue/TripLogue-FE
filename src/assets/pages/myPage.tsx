@@ -1,13 +1,13 @@
 import Layout from '@/layouts/layout';
 import { useState } from 'react';
-import EditProfileModal from '@/components/modals/editProfileModal';
-import ChangePasswordModal from '@/components/modals/changePasswordModal';
+import EditProfileModal from '@/components/myPage/editProfileModal';
+import ChangePasswordModal from '@/components/myPage/changePasswordModal';
 import UserProfileSection from '@/components/myPage/userProfileSection';
 import TravelSummarySection from '@/components/myPage/travelSummarySection';
 import CountryChartSection from '@/components/myPage/countryChartSection';
 import MyTripListSection from '@/components/myPage/myTripListSection';
 import AccountSettingsSection from '@/components/myPage/accountSettingsSection';
-import WithdrawalModal from '@/components/modals/withdrawalModal';
+import WithdrawalModal from '@/components/myPage/withdrawalModal';
 
 function MyPage() {
   const [activeModal, setActiveModal] = useState<

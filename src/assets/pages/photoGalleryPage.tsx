@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Slider from 'react-slick';
 import { ChevronLeft, ChevronRight, Search, Heart } from 'lucide-react';
 import type { Photo } from '@/types';
-import PhotoDetailModal from '@/components/modals/photoDetailModal';
+import PhotoDetailModal from '@/components/photoGallery/photoDetailModal';
 
 const dummyPhotos: Photo[] = [
   {

@@ -1,4 +1,4 @@
-import SummaryCard from '@/components/commons/summaryCard';
+import SummaryCard from '@/components/myPage/summaryCard';
 
 export default function TravelSummarySection() {
   return (

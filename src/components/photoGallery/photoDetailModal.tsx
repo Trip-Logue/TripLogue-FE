@@ -48,11 +48,7 @@ export default function PhotoDetailModal({
           <X size={24} />
         </button>
 
-        <img
-          src={photo.src}
-          alt={photo.alt}
-          className='w-full h-auto max-h-[60vh] object-contain rounded-t-lg'
-        />
+        <img src={photo.src} className='w-full h-auto max-h-[60vh] object-contain rounded-t-lg' />
 
         <div className='p-6'>
           <h2 className='text-2xl font-bold text-gray-900 mb-2'>{photo.title}</h2>
