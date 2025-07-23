@@ -1,14 +1,13 @@
-// src/components/modals/WithdrawalModal.tsx
 import type { WithdrawalModalProps } from '@/types';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { useRoute } from '@/hooks/useRoute';
 
 export default function WithdrawalModal({ onClose }: WithdrawalModalProps) {
   const [currentPassword, setCurrentPassword] = useState('');
   const [agreeToWithdraw, setAgreeToWithdraw] = useState(false);
-  const navigate = useNavigate();
 
+  const { routeToLogin } = useRoute();
   const handleWithdrawal = async (e?: React.FormEvent) => {
     e?.preventDefault();
 
@@ -26,7 +25,6 @@ export default function WithdrawalModal({ onClose }: WithdrawalModalProps) {
     // 1. 현재 비밀번호 검증 (서버에서 수행되어야 함)
     // 2. 회원 탈퇴 처리 (서버에서 사용자 데이터 삭제 등)
     try {
-      // 실제 API 호출을 시뮬레이션
       const response = await new Promise((resolve, reject) => {
         setTimeout(() => {
           if (currentPassword === 'correct_password') {
@@ -39,9 +37,9 @@ export default function WithdrawalModal({ onClose }: WithdrawalModalProps) {
       });
 
       if ((response as { success: boolean }).success) {
-        toast.success('성공적으로 회원 탈퇴가 완료되었습니다.');
+        toast.success('성공적으로 회원 탈퇴 되었습니다.');
         onClose();
-        navigate('/login');
+        routeToLogin();
       }
     } catch (error: any) {
       toast.error(error.message || '회원 탈퇴 중 오류가 발생했습니다.');

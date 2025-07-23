@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { useRoute } from '@/hooks/useRoute';
 
 export default function ChangePasswordModal({ onClose }: { onClose: () => void }) {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
-  const navigate = useNavigate();
+  const { routeToLogin } = useRoute();
 
   const handleChangePassword = (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -30,7 +30,7 @@ export default function ChangePasswordModal({ onClose }: { onClose: () => void }
     console.log('비밀번호 변경 시도:', { currentPassword, newPassword });
     toast.success('성공적으로 변경되었습니다.');
     onClose();
-    navigate('/login');
+    routeToLogin();
   };
 
   return (

@@ -1,4 +1,3 @@
-// src/components/MyPage/MyTripListSection.tsx
 import { useState } from 'react';
 import TripCard from '@/components/commons/tripCard';
 import { ChevronLeft, ChevronRight } from 'lucide-react';

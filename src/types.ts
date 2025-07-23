@@ -85,3 +85,16 @@ export type TripCardProps = {
   date?: string;
   description?: string;
 };
+
+export interface UserProfileSectionProps {
+  openEditProfile: () => void;
+  profileImageUrl?: string | null;
+  userName: string;
+}
+
+export interface EditProfileModalProps {
+  onClose: () => void;
+  onProfileUpdate?: (newNickname: string, newProfileImageUrl: string | null) => void;
+  currentNickname: string;
+  currentProfileImageUrl: string | null;
+}
