@@ -126,3 +126,8 @@ export interface PhotoDetailModalProps {
   toggleFavorite: (id: string) => void;
   onDelete: (id: string) => void;
 }
+
+export interface ErrorPageProps {
+  errorCode : number;
+  message : string;
+}
