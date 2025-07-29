@@ -8,6 +8,7 @@ import Signup from './assets/pages/signupPage';
 import MyPage from './assets/pages/myPage';
 import 'react-toastify/dist/ReactToastify.css';
 import PhotoGallery from './assets/pages/photoGalleryPage';
+import PrivateRoute from './components/commons/privateRoute';
 
 const render = (status: Status) => {
   if (status === Status.LOADING)
@@ -36,7 +37,9 @@ function App() {
       <Wrapper apiKey={mapApiKey} render={render} libraries={['places']}>
         <BrowserRouter>
           <Routes>
+            <PrivateRoute >
             <Route path='/' element={<MainPage />} />
+            </PrivateRoute>
             <Route path='/login' element={<Login />} />
             <Route path='/signup' element={<Signup />} />
             <Route path='/photogallery' element={<PhotoGallery />} />
