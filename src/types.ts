@@ -127,7 +127,11 @@ export interface PhotoDetailModalProps {
   onDelete: (id: string) => void;
 }
 
-export interface ErrorPageProps {
+export interface ErrorPageProps   {
   errorCode : number;
   message : string;
+}
+
+export interface PrivateRouteProps  {
+  children: React.ReactNode;
 }
