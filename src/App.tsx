@@ -37,9 +37,9 @@ function App() {
       <Wrapper apiKey={mapApiKey} render={render} libraries={['places']}>
         <BrowserRouter>
           <Routes>
-            <PrivateRoute >
+            {/* <PrivateRoute > */}
             <Route path='/' element={<MainPage />} />
-            </PrivateRoute>
+            {/* </PrivateRoute> */}
             <Route path='/login' element={<Login />} />
             <Route path='/signup' element={<Signup />} />
             <Route path='/photogallery' element={<PhotoGallery />} />

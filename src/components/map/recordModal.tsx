@@ -8,6 +8,8 @@ export default function RecordModal({ open, onClose, onSubmit, selectedPlace }: 
   const [date, setDate] = useState('');
   const [memo, setMemo] = useState('');
   const [isActive, setIsActive] = useState(false);
+  const [image, setImage] = useState<File | null>(null);
+  const [url, setUrl] = useState<String | null>(null);
 
   // 드래그 앤 드랍 관리하는 코드 18 ~ 34 라인
   const dragStart = () => setIsActive(true);
@@ -17,11 +19,14 @@ export default function RecordModal({ open, onClose, onSubmit, selectedPlace }: 
   };
   const handleDrop = (event: React.DragEvent<HTMLElement>) => {
     event.preventDefault();
-    const files = event.dataTransfer.files;
-    if (files.length > 0) {
-      console.log('파일이 드롭되었습니다:', files[0].name);
+    const file = event.dataTransfer.files[0];
+
+    if (file) {
+      setImage(file);
+      setUrl(URL.createObjectURL(file));
     }
   };
+
   const unUploadStyle =
     'text-sm font-medium mb-1 h-40 border-dashed border-2 border-gray-300 rounded-lg flex items-center justify-center';
   const uplodadStyle =
