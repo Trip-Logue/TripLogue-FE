@@ -1,69 +1,139 @@
-# React + TypeScript + Vite
+# TripLogue Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+여행 기록과 사진 갤러리를 관리하는 웹 애플리케이션입니다.
 
-Currently, two official plugins are available:
+## 주요 기능
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 🔐 인증 시스템
 
-## Expanding the ESLint configuration
+- **회원가입**: 이름, 이메일, 프로필 이미지로 계정 생성
+- **로그인**: 이메일 기반 로그인
+- **프로필 관리**: 프로필 정보 수정 및 관리
+- **회원 탈퇴**: 계정 및 데이터 완전 삭제
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 🗺️ 여행 기록 관리
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **지도 기반 기록**: Google Maps API를 활용한 위치 기반 여행 기록
+- **사진 업로드**: 드래그 앤 드롭으로 여러 장의 사진 업로드
+- **상세 정보**: 제목, 날짜, 위치, 국가, 메모 등 상세 정보 저장
+- **자동 저장**: 로컬 스토리지를 통한 데이터 영구 보존
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+### 📸 사진 갤러리
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- **통합 갤러리**: 여행 기록과 연동된 사진 관리
+- **필터링**: 연도별, 태그별, 즐겨찾기별 사진 필터링
+- **검색**: 제목, 장소, 태그, 설명으로 사진 검색
+- **상세 보기**: 사진 상세 정보 및 편집 기능
+
+### 👤 마이페이지
+
+- **여행 통계**: 총 기록 수, 방문 국가 수, 최근 여행 등
+- **국가별 차트**: 방문한 국가별 기록 횟수 시각화
+- **여행 목록**: 카드 형태의 여행 기록 목록
+- **계정 설정**: 비밀번호 변경, 회원 탈퇴 등
+
+## 기술 스택
+
+- **Frontend**: React 18, TypeScript
+- **상태 관리**: Zustand
+- **스타일링**: Tailwind CSS
+- **지도**: Google Maps API
+- **차트**: Chart.js
+- **아이콘**: Lucide React
+- **빌드 도구**: Vite
+
+## 데이터 저장
+
+### 로컬 스토리지 구조
+
+```
+localStorage:
+├── users: 사용자 목록
+├── isLoggedIn: 로그인 상태
+├── user: 현재 로그인한 사용자 정보
+└── travelRecords: 여행 기록 데이터
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 데이터 타입
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- **User**: 사용자 기본 정보
+- **TravelRecordData**: 여행 기록 전체 데이터
+- **Photo**: 사진 정보
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 설치 및 실행
+
+```bash
+# 의존성 설치
+npm install
+# 또는
+pnpm install
+
+# 개발 서버 실행
+npm run dev
+# 또는
+pnpm dev
+
+# 빌드
+npm run build
+# 또는
+pnpm build
 ```
+
+## 환경 설정
+
+`.env` 파일을 생성하고 다음 환경변수를 설정하세요:
+
+```env
+VITE_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
+```
+
+## 주요 컴포넌트
+
+- **LoginPage**: 로그인 페이지
+- **SignupPage**: 회원가입 페이지
+- **MainPage**: 지도 기반 메인 페이지
+- **PhotoGalleryPage**: 사진 갤러리 페이지
+- **MyPage**: 사용자 마이페이지
+- **RecordModal**: 여행 기록 추가 모달
+- **PhotoDetailModal**: 사진 상세 보기 모달
+
+## 상태 관리
+
+### useAuthStore
+
+- 사용자 인증 상태 관리
+- 로그인/로그아웃/회원가입 처리
+- 프로필 정보 업데이트
+
+### useTravelStore
+
+- 여행 기록 데이터 관리
+- 사진 추가/삭제
+- 사용자별 기록 조회
+
+## 라우팅
+
+- `/`: 메인 페이지 (지도)
+- `/login`: 로그인 페이지
+- `/signup`: 회원가입 페이지
+- `/photos`: 사진 갤러리
+- `/mypage`: 마이페이지
+
+## 개발 가이드
+
+### 새로운 기능 추가
+
+1. `src/types.ts`에 타입 정의 추가
+2. 필요한 컴포넌트 생성
+3. 상태 관리 로직 구현
+4. 라우팅 설정
+
+### 데이터 구조 변경
+
+1. `src/types.ts`에서 타입 수정
+2. 관련 컴포넌트 업데이트
+3. 마이그레이션 로직 구현 (필요시)
+
+## 라이선스
+
+MIT License

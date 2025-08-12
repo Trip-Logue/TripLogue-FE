@@ -6,7 +6,7 @@ function MainPage() {
   return (
     <Layout>
       <div className='justify-center min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 w-full h-full'>
-        <div className='max-w-7xl mx-auto p-4 w-full h-full h-300 sm:p-6 lg:p-8'>
+        <div className='max-w-7xl mx-auto p-4 w-full h-full sm:p-6 lg:p-8'>
           {/* Hero Section */}
           <header className='mb-12'>
             <div className='relative overflow-hidden bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-3xl shadow-2xl p-8 lg:p-12'>

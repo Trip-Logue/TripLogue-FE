@@ -14,13 +14,13 @@ const mockAllUsers: SearchUser[] = [
 ];
 
 // 내 현재 친구 목록
-let mockFriends: Friend[] = [
+const mockFriends: Friend[] = [
   { friend_id: 2, friend_name: '박영희', profile_image: '' },
   { friend_id: 3, friend_name: '이지은', profile_image: '' },
 ];
 
 // 내가 받은 친구 요청 목록
-let mockReceivedRequests: ReceivedRequest[] = [
+const mockReceivedRequests: ReceivedRequest[] = [
   { friendship_id: 101, user_id: 4, name: '최민준', request_date: new Date().toISOString() },
   { friendship_id: 102, user_id: 5, name: '정수빈', request_date: new Date().toISOString() },
 ];

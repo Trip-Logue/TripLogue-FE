@@ -1,105 +1,201 @@
 import { useState } from 'react';
-import TripCard from '@/components/myPage/tripCard';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import {
+  MapPin,
+  Calendar,
+  Camera,
+  Trash2,
+  AlertTriangle,
+  ChevronLeft,
+  ChevronRight,
+  ChevronFirst,
+  ChevronLast,
+} from 'lucide-react';
+import TripCard from './tripCard';
+import type { TravelRecordData } from '@/types';
 
-const dummyTrips = [
-  { title: '2024 오사카 여행', date: '2024-06-24', description: '사카사카오사카' },
-  {
-    title: '제주도 여름 여행',
-    date: '2025-07-15',
-    description: '제주도에서 빼놓을 수 없는 푸른 바다와 맛있는 음식',
-  },
-  { title: '서울 당일치기', date: '2024-07-20', description: '한강에서 시원한 바람 맞으며 힐링' },
-  { title: '부산 해운대 여행', date: '2023-08-10', description: '탁 트인 해운대에서 휴식' },
-  {
-    title: '도쿄 쇼핑 투어',
-    date: '2025-01-05',
-    description: '신주쿠, 시부야를 중심으로 즐거운 쇼핑',
-  },
-  { title: '강릉 바다 드라이브', date: '2024-05-01', description: '동해 바다 따라 드라이브 코스' },
-  { title: '경주 역사 탐방', date: '2023-11-20', description: '천년 고도 경주의 유적지 탐방' },
-];
+interface MyTripListSectionProps {
+  travelRecords: TravelRecordData[];
+  onDeleteRecord: (recordId: string) => void;
+  showPagination: boolean;
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+  totalRecords: number;
+  startIndex: number;
+  endIndex: number;
+}
 
-const CARDS_PER_PAGE = 3;
-const CARD_WIDTH_PX = 256;
-const CARD_GAP_PX = 16;
+export default function MyTripListSection({
+  travelRecords,
+  onDeleteRecord,
+  showPagination,
+  currentPage,
+  totalPages,
+  onPageChange,
+  totalRecords,
+  startIndex,
+  endIndex,
+}: MyTripListSectionProps) {
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<{
+    recordId: string;
+    recordTitle: string;
+  } | null>(null);
 
-const CARD_HEIGHT_PX = 192;
-const ARROW_VERTICAL_OFFSET = 2;
-
-export default function MyTripListSection() {
-  const [startIndex, setStartIndex] = useState(0);
-
-  const showPrevCards = () => {
-    setStartIndex((prevIndex) => Math.max(0, prevIndex - CARDS_PER_PAGE));
+  const handleDeleteClick = (recordId: string, recordTitle: string) => {
+    setShowDeleteConfirm({ recordId, recordTitle });
   };
 
-  const showNextCards = () => {
-    setStartIndex((prevIndex) => {
-      const remainingCards = dummyTrips.length - (prevIndex + CARDS_PER_PAGE);
-      if (remainingCards > 0 && remainingCards < CARDS_PER_PAGE) {
-        return prevIndex + remainingCards;
-      } else if (remainingCards <= 0) {
-        return prevIndex;
-      } else {
-        return prevIndex + CARDS_PER_PAGE;
-      }
-    });
+  const handleConfirmDelete = () => {
+    if (showDeleteConfirm) {
+      onDeleteRecord(showDeleteConfirm.recordId);
+      setShowDeleteConfirm(null);
+    }
   };
 
-  const showArrows = dummyTrips.length > CARDS_PER_PAGE;
-  const canGoPrev = startIndex > 0;
-  const canGoNext = startIndex + CARDS_PER_PAGE < dummyTrips.length;
-  const desiredVisibleWidth = CARD_WIDTH_PX * CARDS_PER_PAGE + CARD_GAP_PX * (CARDS_PER_PAGE - 1);
-  const totalViewportWidth = desiredVisibleWidth + 40 * 2;
+  const goToPage = (page: number) => {
+    onPageChange(Math.max(1, Math.min(page, totalPages)));
+  };
+
+  if (totalRecords === 0) {
+    return (
+      <div className='bg-white rounded-2xl shadow-lg p-8 border border-gray-100'>
+        <div className='text-center'>
+          <MapPin className='mx-auto text-gray-300 mb-4' size={48} />
+          <h3 className='text-xl font-bold text-gray-700 mb-2'>아직 여행 기록이 없습니다</h3>
+          <p className='text-gray-500'>지도에서 여행 기록을 추가하면 여기에 표시됩니다.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const sortedRecords = [...travelRecords].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+  );
 
   return (
-    <section>
-      <h3 className='text-lg font-semibold mb-4'>나의 여행 기록</h3>
-      <div
-        className='relative overflow-hidden'
-        style={{
-          maxWidth: `${totalViewportWidth}px`,
-          margin: '0 auto',
-          minHeight: `${CARD_HEIGHT_PX + ARROW_VERTICAL_OFFSET}px`,
-        }}>
-        <div
-          className='flex space-x-4 transition-transform duration-300 ease-in-out px-10'
-          style={{
-            transform: `translateX(-${startIndex * (CARD_WIDTH_PX + CARD_GAP_PX)}px)`,
-            width: `${dummyTrips.length * (CARD_WIDTH_PX + CARD_GAP_PX) + 40 * 2}px`,
-          }}>
-          {dummyTrips.map((trip, index) => (
-            <TripCard
-              key={index}
-              title={trip.title}
-              date={trip.date}
-              description={trip.description}
-            />
-          ))}
-        </div>
-
-        {showArrows && (
-          <>
-            <button
-              onClick={showPrevCards}
-              disabled={!canGoPrev}
-              className={`absolute top-1/2 -translate-y-1/2 left-0 z-10 bg-white p-2 rounded-full shadow-md ${
-                !canGoPrev ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'
-              }`}>
-              <ChevronLeft className='w-6 h-6 text-gray-700' />
-            </button>
-            <button
-              onClick={showNextCards}
-              disabled={!canGoNext}
-              className={`absolute top-1/2 -translate-y-1/2 right-0 z-10 bg-white p-2 rounded-full shadow-md ${
-                !canGoNext ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'
-              }`}>
-              <ChevronRight className='w-6 h-6 text-gray-700' />
-            </button>
-          </>
-        )}
+    <div className='bg-white rounded-2xl shadow-lg p-8 border border-gray-100'>
+      <div className='flex items-center gap-3 mb-6'>
+        <MapPin className='text-blue-600' size={24} />
+        <h2 className='text-2xl font-bold text-gray-900'>내 여행 기록</h2>
+        <span className='text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full'>
+          총 {totalRecords}개
+        </span>
       </div>
-    </section>
+
+      <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
+        {sortedRecords.map((record) => (
+          <TripCard
+            key={record.id}
+            title={record.title}
+            date={record.date}
+            location={record.location}
+            country={record.country}
+            photoCount={record.photos.length}
+            onDelete={() => handleDeleteClick(record.id, record.title)}
+          />
+        ))}
+      </div>
+
+      {/* 페이지네이션 */}
+      {showPagination && (
+        <div className='mt-8 flex items-center justify-center gap-2'>
+          <button
+            onClick={() => goToPage(1)}
+            disabled={currentPage === 1}
+            className='p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors'>
+            <ChevronFirst size={16} />
+          </button>
+          <button
+            onClick={() => goToPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            className='p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors'>
+            <ChevronLeft size={16} />
+          </button>
+
+          <div className='flex gap-1'>
+            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+              let pageNum;
+              if (totalPages <= 5) {
+                pageNum = i + 1;
+              } else if (currentPage <= 3) {
+                pageNum = i + 1;
+              } else if (currentPage >= totalPages - 2) {
+                pageNum = totalPages - 4 + i;
+              } else {
+                pageNum = currentPage - 2 + i;
+              }
+
+              return (
+                <button
+                  key={pageNum}
+                  onClick={() => goToPage(pageNum)}
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    currentPage === pageNum
+                      ? 'bg-blue-500 text-white'
+                      : 'border border-gray-300 hover:bg-gray-50'
+                  }`}>
+                  {pageNum}
+                </button>
+              );
+            })}
+          </div>
+
+          <button
+            onClick={() => goToPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className='p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors'>
+            <ChevronRight size={16} />
+          </button>
+          <button
+            onClick={() => goToPage(totalPages)}
+            disabled={currentPage === totalPages}
+            className='p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors'>
+            <ChevronLast size={16} />
+          </button>
+        </div>
+      )}
+
+      {/* 페이지 정보 */}
+      {showPagination && (
+        <div className='mt-4 text-center text-sm text-gray-500'>
+          <span>
+            {startIndex + 1}-{Math.min(endIndex, totalRecords)} / {totalRecords}개의 여행 기록
+          </span>
+        </div>
+      )}
+
+      {/* 삭제 확인 모달 */}
+      {showDeleteConfirm && (
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50'>
+          <div className='bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full mx-4'>
+            <div className='flex items-center gap-3 mb-4'>
+              <div className='p-2 bg-red-100 rounded-full'>
+                <AlertTriangle className='text-red-600' size={24} />
+              </div>
+              <h3 className='text-xl font-bold text-gray-900'>여행 기록 삭제</h3>
+            </div>
+            <p className='text-gray-600 mb-6'>
+              "{showDeleteConfirm.recordTitle}" 여행 기록을 삭제하시겠습니까?
+              <br />
+              <span className='text-red-600 font-medium'>
+                이 작업은 되돌릴 수 없으며, 관련된 모든 사진도 함께 삭제됩니다.
+              </span>
+            </p>
+            <div className='flex gap-3 justify-end'>
+              <button
+                onClick={() => setShowDeleteConfirm(null)}
+                className='px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors'>
+                취소
+              </button>
+              <button
+                onClick={handleConfirmDelete}
+                className='px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors'>
+                삭제
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

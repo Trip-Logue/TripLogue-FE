@@ -4,6 +4,8 @@ import { toast } from 'react-toastify';
 import CommonBtn from '@/components/commons/commonBtn';
 import RegisterInput from '@/components/commons/registerInput';
 import { User, UserPlus, Mail, Lock, UserCheck, Camera, MapPin, Users } from 'lucide-react';
+import useAuthStore from '@/hooks/useAuthStore';
+import { useNavigate } from 'react-router-dom';
 
 const strictEmailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -20,6 +22,8 @@ function Signup() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const { routeToLogin } = useRoute();
+  const { register } = useAuthStore();
+  const navigate = useNavigate();
 
   const handleUserIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -88,22 +92,17 @@ function Signup() {
     }
 
     try {
-      // 실제 서버 연동 시 FormData를 사용하여 이미지 파일 전송
-      // const formData = new FormData();
-      // formData.append('name', name);
-      // formData.append('email', fullEmail);
-      // formData.append('password', password);
-      // if (profileImage) {
-      //   formData.append('profileImage', profileImage);
-      // }
-      // await axios.post('/signup', formData, {
-      //   headers: { 'Content-Type': 'multipart/form-data' },
-      // });
+      const fullEmail = `${userId}@${emailDomain === 'write' ? customDomain : emailDomain}`;
 
-      await new Promise((r) => setTimeout(r, 1000)); // 더미 대기
+      // 로컬 스토리지에 사용자 정보 저장
+      register({
+        name,
+        email: fullEmail,
+        profileImageUrl: previewImageUrl || undefined,
+      });
 
       toast.success('회원가입이 완료되었습니다!');
-      routeToLogin();
+      navigate('/'); // 메인 페이지로 이동
     } catch (error) {
       toast.error('회원가입 중 오류가 발생했습니다.');
       console.error(error);

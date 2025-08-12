@@ -1,13 +1,11 @@
 import type { WithdrawalModalProps } from '@/types';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import { useRoute } from '@/hooks/useRoute';
 
-export default function WithdrawalModal({ onClose }: WithdrawalModalProps) {
+export default function WithdrawalModal({ onClose, onConfirm }: WithdrawalModalProps) {
   const [currentPassword, setCurrentPassword] = useState('');
   const [agreeToWithdraw, setAgreeToWithdraw] = useState(false);
 
-  const { routeToLogin } = useRoute();
   const handleWithdrawal = async (e?: React.FormEvent) => {
     e?.preventDefault();
 
@@ -21,28 +19,32 @@ export default function WithdrawalModal({ onClose }: WithdrawalModalProps) {
       return;
     }
 
-    // 실제 백엔드 연동을 위한 로직 (예시)
-    // 1. 현재 비밀번호 검증 (서버에서 수행되어야 함)
-    // 2. 회원 탈퇴 처리 (서버에서 사용자 데이터 삭제 등)
     try {
-      const response = await new Promise((resolve, reject) => {
-        setTimeout(() => {
-          if (currentPassword === 'correct_password') {
-            // 실제 비밀번호와 비교하는 로직으로 변경 필요
-            resolve({ success: true });
-          } else {
-            reject(new Error('현재 비밀번호가 올바르지 않습니다.'));
-          }
-        }, 500); // 0.5초 지연 시뮬레이션
-      });
+      // 실제로는 비밀번호 검증이 필요하지만, 로컬 스토리지 기반이므로 생략
+      // 여기서는 onConfirm을 호출하여 부모 컴포넌트에서 처리
+      if (onConfirm) {
+        onConfirm();
+      } else {
+        // 기존 로직 (백엔드 연동 시)
+        const response = await new Promise((resolve, reject) => {
+          setTimeout(() => {
+            if (currentPassword === 'correct_password') {
+              resolve({ success: true });
+            } else {
+              reject(new Error('현재 비밀번호가 올바르지 않습니다.'));
+            }
+          }, 500);
+        });
 
-      if ((response as { success: boolean }).success) {
-        toast.success('성공적으로 회원 탈퇴 되었습니다.');
-        onClose();
-        routeToLogin();
+        if ((response as { success: boolean }).success) {
+          toast.success('성공적으로 회원 탈퇴 되었습니다.');
+          onClose();
+        }
       }
-    } catch (error: any) {
-      toast.error(error.message || '회원 탈퇴 중 오류가 발생했습니다.');
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : '회원 탈퇴 중 오류가 발생했습니다.';
+      toast.error(errorMessage);
     }
   };
 

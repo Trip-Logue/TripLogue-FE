@@ -5,19 +5,32 @@ import { toast } from 'react-toastify';
 import CommonBtn from '@/components/commons/commonBtn';
 import RegisterInput from '@/components/commons/registerInput';
 import { MapPin, Camera, Users, Plane, LogIn, Mail, Lock } from 'lucide-react';
-import { loginUser } from '@/api/service/authService';
+import useAuthStore from '@/hooks/useAuthStore';
+import type { User } from '@/types';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { routeToSignup } = useRoute();
+  const { login } = useAuthStore();
 
   const navigate = useNavigate();
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      await loginUser(email, password);
+      // 로컬 스토리지에서 사용자 정보 확인
+      const users: User[] = JSON.parse(localStorage.getItem('users') || '[]');
+      const user = users.find((u: User) => u.email === email);
+
+      if (!user) {
+        toast.error('등록되지 않은 이메일입니다.');
+        return;
+      }
+
+      // 실제로는 비밀번호 검증이 필요하지만, 로컬 스토리지 기반이므로 생략
+      // 여기서는 이메일만으로 로그인 처리
+      login(user);
       toast.success('로그인 성공!');
       navigate('/');
     } catch (error) {
