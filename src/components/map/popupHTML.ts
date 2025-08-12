@@ -14,13 +14,13 @@ export function getInfoWindowContent({
 }) {
   return `
       <div style="background: white; border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); padding: 24px; min-width: 240px; max-width: 340px; display: flex; flex-direction: column; align-items: center;">
-        <div style="width: 200px; height: 100px; background: #eee; border-radius: 10px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center;">
-          ${
-            imageUrl
-              ? `<img src="${imageUrl}" style="max-width: 100%; max-height: 100%; border-radius: 10px;" />`
-              : ''
-          }
-        </div>
+        ${
+          imageUrl
+            ? `<div style="width: 220px; height: 124px; overflow:hidden; background: #f4f4f5; border-radius: 12px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center;">
+                 <img src="${imageUrl}" style="width:100%; height:100%; object-fit:cover; border-radius: 12px;" />
+               </div>`
+            : ''
+        }
         <div style="width: 100%; margin-bottom: 10px;">
           <div style="font-size: 1.1rem; font-weight: bold;">${title}</div>
           <div style="font-size: 0.98rem; color: #888;">${date}</div>
