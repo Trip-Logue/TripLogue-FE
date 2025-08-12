@@ -28,6 +28,7 @@ export interface PlaceInfo {
   memo: string;
   title: string; // 제목 필드 추가
   country?: string; // 나라 이름 필드 추가 (마이페이지 차트 활용 위함)
+  imageUrls?: string[]; // 마커 인포윈도우에 표시할 이미지 URL들(썸네일은 첫 번째 사용)
 }
 
 export type MyMapProps = {
@@ -38,7 +39,7 @@ export type MyMapProps = {
 export interface RecordModalProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: { title: string; date: string; memo: string }) => void;
+  onSubmit: (data: { title: string; date: string; memo: string; images?: File[] }) => void;
   selectedPlace: { name: string } | null;
 }
 
