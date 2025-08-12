@@ -67,6 +67,16 @@ export default function RecordModal({
     setImageUrls(newUrls);
   };
 
+  // 파일을 Base64로 변환하는 함수
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
   const addTag = () => {
     if (newTag.trim() && !tags.includes(newTag.trim())) {
       setTags([...tags, newTag.trim()]);
@@ -85,43 +95,46 @@ export default function RecordModal({
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!user) {
       toast.error('로그인이 필요합니다.');
       return;
     }
 
-    if (!title || !date || !selectedPlace) {
+    if (!title.trim() || !date || !selectedPlace) {
       toast.error('제목, 날짜, 장소를 모두 입력해주세요.');
       return;
     }
 
-    // 사진 데이터 생성
-    const photos: Photo[] = images.map((file, index) => ({
-      id: `photo_${Date.now()}_${index}`,
-      src: imageUrls[index],
-      title: title,
-      date: date,
-      location: selectedPlace.name,
-      tags: tags, // 모든 사진에 동일한 태그 적용
-      isFavorite: false,
-      description: memo,
-    }));
-
-    // 여행 기록 데이터 생성
-    const travelRecord: Omit<TravelRecordData, 'id' | 'createdAt' | 'updatedAt'> = {
-      userId: user.id,
-      title,
-      date,
-      location: selectedPlace.name,
-      latitude: selectedPlace.location.lat(),
-      longitude: selectedPlace.location.lng(),
-      country: country || 'Unknown',
-      memo,
-      photos,
-    };
-
     try {
+      // 이미지 파일들을 Base64로 변환
+      const base64Images = await Promise.all(images.map((file) => fileToBase64(file)));
+
+      // 사진 데이터 생성 (Base64 데이터 URL 사용)
+      const photos: Photo[] = base64Images.map((base64Url, index) => ({
+        id: `photo_${Date.now()}_${index}`,
+        src: base64Url, // blob URL 대신 Base64 데이터 URL 사용
+        title: title,
+        date: date,
+        location: selectedPlace.name,
+        tags: tags, // 모든 사진에 동일한 태그 적용
+        isFavorite: false,
+        description: memo,
+      }));
+
+      // 여행 기록 데이터 생성
+      const travelRecord: Omit<TravelRecordData, 'id' | 'createdAt' | 'updatedAt'> = {
+        userId: user.id,
+        title,
+        date,
+        location: selectedPlace.name,
+        latitude: selectedPlace.location.lat(),
+        longitude: selectedPlace.location.lng(),
+        country: country || 'Unknown',
+        memo,
+        photos,
+      };
+
       // 여행 기록 추가
       addRecord(travelRecord);
 
@@ -156,11 +169,17 @@ export default function RecordModal({
     }
   }, [open, selectedPlace]);
 
+  // 모달이 닫힐 때 blob URL 정리
   useEffect(() => {
-    return () => {
-      imageUrls.forEach((url) => URL.revokeObjectURL(url));
-    };
-  }, [imageUrls]);
+    if (!open) {
+      // blob URL 정리
+      imageUrls.forEach((url) => {
+        if (url.startsWith('blob:')) {
+          URL.revokeObjectURL(url);
+        }
+      });
+    }
+  }, [open, imageUrls]);
 
   if (!open) return null;
 
