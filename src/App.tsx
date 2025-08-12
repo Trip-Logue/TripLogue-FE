@@ -11,13 +11,15 @@ import PhotoGallery from './pages/photoGalleryPage';
 import { PrivateRoute } from './components/route/privateRoute'; // Corrected import path
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import FriendPage from './pages/friendPage';
+import ErrorPage from './components/error/errorPage';
 
 const queryClient = new QueryClient();
 
 const render = (status: Status) => {
   if (status === Status.LOADING)
     return <PuffLoader color='#2469fc' loading size={150} speedMultiplier={1} />;
-  if (status === Status.FAILURE) return <div>로딩 실패</div>;
+  if (status === Status.FAILURE)
+    return <ErrorPage errorCode={500} message='지도 로딩에 실패했습니다.' />;
   return <MainPage />;
 };
 
@@ -77,6 +79,11 @@ function App() {
                     <FriendPage />
                   </PrivateRoute>
                 }
+              />
+              {/* 404 에러 페이지 */}
+              <Route
+                path='*'
+                element={<ErrorPage errorCode={404} message='페이지를 찾을 수 없습니다.' />}
               />
             </Routes>
           </BrowserRouter>

@@ -13,6 +13,7 @@ export default function MyMap({ mapRef, places }: MyMapProps) {
   const markers = useRef<Map<string, google.maps.Marker>>(new Map());
   const infoWindows = useRef<Map<string, google.maps.InfoWindow>>(new Map());
   const markerGroups = useRef<Map<string, string[]>>(new Map()); // 같은 위치의 마커들을 그룹화
+  const userMovedMap = useRef<boolean>(false); // 사용자가 직접 지도를 이동했는지 추적
 
   useEffect(() => {
     if (!containerRef.current || mapInstance.current) return;
@@ -27,6 +28,30 @@ export default function MyMap({ mapRef, places }: MyMapProps) {
 
     mapInstance.current = map;
     mapRef.current = map;
+
+    // 사용자가 직접 지도를 이동했는지 추적
+    const handleMapDrag = () => {
+      userMovedMap.current = true;
+    };
+
+    const handleMapZoom = () => {
+      userMovedMap.current = true;
+    };
+
+    // 내 위치 버튼 클릭 시 플래그 리셋
+    const handleResetUserMovedFlag = () => {
+      userMovedMap.current = false;
+    };
+
+    map.addListener('dragend', handleMapDrag);
+    map.addListener('zoom_changed', handleMapZoom);
+    window.addEventListener('resetUserMovedFlag', handleResetUserMovedFlag);
+
+    return () => {
+      google.maps.event.clearListeners(map, 'dragend');
+      google.maps.event.clearListeners(map, 'zoom_changed');
+      window.removeEventListener('resetUserMovedFlag', handleResetUserMovedFlag);
+    };
   }, []);
 
   useEffect(() => {
@@ -62,24 +87,35 @@ export default function MyMap({ mapRef, places }: MyMapProps) {
 
     console.log('Total markers created:', markers.current.size); // 디버깅 로그
 
-    // 여행 기록이 있으면 첫 번째 기록으로 지도 중심 이동
-    if (places.length > 0 && mapInstance.current) {
-      const bounds = new google.maps.LatLngBounds();
-      places.forEach((place) => bounds.extend(place.location));
+    // 여행 기록이 있고, 지도가 초기 상태(북극)에 있을 때만 자동으로 중심 이동
+    if (places.length > 0 && mapInstance.current && !userMovedMap.current) {
+      const currentCenter = mapInstance.current.getCenter();
+      const northPoleCenter = { lat: 90, lng: 0 }; // 북극 좌표
 
-      // 모든 마커가 보이도록 지도 조정
-      if (places.length === 1) {
-        mapInstance.current.setCenter(places[0].location);
-        mapInstance.current.setZoom(15);
-      } else {
-        mapInstance.current.fitBounds(bounds);
-        // 너무 확대되지 않도록 최대 줌 레벨 제한
-        google.maps.event.addListenerOnce(mapInstance.current, 'bounds_changed', () => {
-          const currentZoom = mapInstance.current?.getZoom();
-          if (mapInstance.current && currentZoom && currentZoom > 15) {
-            mapInstance.current.setZoom(15);
-          }
-        });
+      // 현재 지도 중심이 북극 근처에 있는지 확인 (초기 상태인지 판단)
+      const isNearNorthPole =
+        currentCenter &&
+        Math.abs(currentCenter.lat() - northPoleCenter.lat) < 10 && // 북극 근처 10도 이내
+        Math.abs(currentCenter.lng() - northPoleCenter.lng) < 10;
+
+      if (isNearNorthPole) {
+        const bounds = new google.maps.LatLngBounds();
+        places.forEach((place) => bounds.extend(place.location));
+
+        // 모든 마커가 보이도록 지도 조정
+        if (places.length === 1) {
+          mapInstance.current.setCenter(places[0].location);
+          mapInstance.current.setZoom(15);
+        } else {
+          mapInstance.current.fitBounds(bounds);
+          // 너무 확대되지 않도록 최대 줌 레벨 제한
+          google.maps.event.addListenerOnce(mapInstance.current, 'bounds_changed', () => {
+            const currentZoom = mapInstance.current?.getZoom();
+            if (mapInstance.current && currentZoom && currentZoom > 15) {
+              mapInstance.current.setZoom(15);
+            }
+          });
+        }
       }
     }
   }, [places]);
@@ -97,22 +133,14 @@ export default function MyMap({ mapRef, places }: MyMapProps) {
         url:
           'data:image/svg+xml;charset=UTF-8,' +
           encodeURIComponent(`
-          <svg width="32" height="40" viewBox="0 0 32 40" xmlns="http://www.w3.org/2000/svg">
-            <!-- 핀 그림자 -->
-            <ellipse cx="16" cy="38" rx="4" ry="1.5" fill="rgba(0,0,0,0.2)"/>
-            
-            <!-- 핀 몸체 (📍 스타일) -->
-            <circle cx="16" cy="16" r="12" fill="#FF6B6B" stroke="#E74C3C" stroke-width="2"/>
-            
-            <!-- 핀 꼬리 (📌 스타일) -->
-            <path d="M16 28 L20 40 L16 36 L12 40 Z" fill="#FF6B6B" stroke="#E74C3C" stroke-width="1"/>
-            
-            <!-- 핀 내부 원 -->
-            <circle cx="16" cy="16" r="8" fill="#FFE66D" stroke="#F39C12" stroke-width="1.5"/>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" fill="#EF4444" stroke="#DC2626" stroke-width="1.5"/>
+            <circle cx="12" cy="10" r="3" fill="#FFFFFF" stroke="#DC2626" stroke-width="1"/>
+            <circle cx="12" cy="10" r="1.5" fill="#EF4444"/>
           </svg>
         `),
-        scaledSize: new google.maps.Size(32, 40),
-        anchor: new google.maps.Point(16, 40),
+        scaledSize: new google.maps.Size(32, 32),
+        anchor: new google.maps.Point(16, 32),
       },
       zIndex: 1000,
     });
@@ -156,34 +184,14 @@ export default function MyMap({ mapRef, places }: MyMapProps) {
         url:
           'data:image/svg+xml;charset=UTF-8,' +
           encodeURIComponent(`
-          <svg width="40" height="48" viewBox="0 0 40 48" xmlns="http://www.w3.org/2000/svg">
-            <!-- 핀 그림자 -->
-            <ellipse cx="20" cy="46" rx="5" ry="2" fill="rgba(0,0,0,0.2)"/>
-            
-            <!-- 핀 몸체 (그룹용 특별 디자인) -->
-            <circle cx="20" cy="20" r="16" fill="#4A90E2" stroke="#357ABD" stroke-width="2.5"/>
-            
-            <!-- 핀 꼬리 -->
-            <path d="M20 36 L26 48 L20 44 L14 48 Z" fill="#4A90E2" stroke="#357ABD" stroke-width="1.5"/>
-            
-            <!-- 핀 내부 원 -->
-            <circle cx="20" cy="20" r="12" fill="#FFFFFF" stroke="#4A90E2" stroke-width="2"/>
-            
-            <!-- 숫자 표시 -->
-            <text x="20" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#4A90E2">${groupPlaces.length}</text>
-            
-            <!-- 하이라이트 -->
-            <circle cx="16" cy="16" r="3" fill="rgba(255,255,255,0.8)"/>
-            
-            <!-- 장식 점들 -->
-            <circle cx="8" cy="8" r="1.5" fill="#4A90E2"/>
-            <circle cx="32" cy="8" r="1.5" fill="#4A90E2"/>
-            <circle cx="8" cy="32" r="1.5" fill="#4A90E2"/>
-            <circle cx="32" cy="32" r="1.5" fill="#4A90E2"/>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" fill="#3B82F6" stroke="#1E40AF" stroke-width="1.5"/>
+            <circle cx="12" cy="10" r="3" fill="#FFFFFF" stroke="#1E40AF" stroke-width="1"/>
+            <circle cx="12" cy="10" r="1.5" fill="#3B82F6"/>
           </svg>
         `),
-        scaledSize: new google.maps.Size(40, 48),
-        anchor: new google.maps.Point(20, 48),
+        scaledSize: new google.maps.Size(32, 32),
+        anchor: new google.maps.Point(16, 32),
       },
       zIndex: 1001, // 그룹 마커는 더 높은 z-index
     });

@@ -2,8 +2,10 @@ import { useRef, useState, useEffect } from 'react';
 import MyMap from './myMap';
 import SearchBar from './serchBar';
 import RecordModal from './recordModal';
+import { MapPin } from 'lucide-react';
 import useAuthStore from '@/hooks/useAuthStore';
 import useTravelStore from '@/hooks/useTravelStore';
+import { useCurrentLocation } from '@/hooks/useCurrentLocation';
 import type { PlaceInfo } from '@/types';
 import { toast } from 'react-toastify';
 
@@ -14,7 +16,30 @@ export default function MainMap() {
   const [places, setPlaces] = useState<PlaceInfo[]>([]);
 
   const { user } = useAuthStore();
-  const { getRecordsByUser, travelRecords } = useTravelStore();
+  const { getRecordsByUser, travelRecords, deleteRecord } = useTravelStore();
+
+  // 새로운 훅들 사용
+  const { moveToCurrentLocation, clearCurrentLocationMarker } = useCurrentLocation({
+    mapInstance: mapRef,
+    onLocationFound: (location) => {
+      // 현재 위치를 찾았을 때 기록창 열기
+      const currentLocationPlace = {
+        name: '현재 위치',
+        geometry: {
+          location: new google.maps.LatLng(location.lat, location.lng),
+        },
+      };
+      setSelectedPlace(currentLocationPlace as google.maps.places.PlaceResult);
+      setModalOpen(true);
+    },
+    onLocationMove: () => {
+      // 내 위치로 이동했을 때 플래그 리셋 (MyMap 컴포넌트에서 처리)
+      if (mapRef.current) {
+        // MyMap 컴포넌트의 userMovedMap 플래그를 리셋하기 위해 커스텀 이벤트 발생
+        window.dispatchEvent(new CustomEvent('resetUserMovedFlag'));
+      }
+    },
+  });
 
   // 사용자의 여행 기록을 가져와서 지도에 표시할 places 배열로 변환
   const updatePlaces = () => {
@@ -27,8 +52,8 @@ export default function MainMap() {
         memo: record.memo,
         title: record.title,
         country: record.country,
-        photos: record.photos, // 사진 배열 추가
-        recordId: record.id, // 여행 기록 ID 추가
+        photos: record.photos,
+        recordId: record.id,
       }));
       setPlaces(placesData);
     }
@@ -44,8 +69,6 @@ export default function MainMap() {
     const handleDeleteTravelRecord = (event: CustomEvent) => {
       const { recordId } = event.detail;
       if (recordId) {
-        // useTravelStore의 deleteRecord 호출
-        const { deleteRecord } = useTravelStore.getState();
         deleteRecord(recordId);
         toast.success('여행 기록이 삭제되었습니다.');
       }
@@ -56,7 +79,7 @@ export default function MainMap() {
     return () => {
       window.removeEventListener('deleteTravelRecord', handleDeleteTravelRecord as EventListener);
     };
-  }, []);
+  }, [deleteRecord]);
 
   const handleSearch = (place: google.maps.places.PlaceResult) => {
     if (!mapRef.current) return;
@@ -71,8 +94,14 @@ export default function MainMap() {
 
   const handleModalClose = () => {
     setModalOpen(false);
+    // 모달이 닫힐 때 현재 위치 마커 정리
+    clearCurrentLocationMarker();
     // 모달이 닫힌 후 여행 기록이 추가되었을 수 있으므로 places를 다시 가져옴
     updatePlaces();
+  };
+
+  const handleCurrentLocationClick = () => {
+    moveToCurrentLocation();
   };
 
   return (
@@ -82,6 +111,16 @@ export default function MainMap() {
           onSearch={handleSearch}
           className='absolute top-2 left-40 z-10 bg-white rounded-lg px-4 py-2 h-13 w-90 '
         />
+
+        {/* 내 위치 찾기 버튼 */}
+        <button
+          onClick={handleCurrentLocationClick}
+          className='absolute top-2 right-16 z-10 bg-white rounded-lg px-4 py-2 shadow-lg hover:bg-gray-50 transition-all duration-200 flex items-center gap-2'
+          title='내 위치 찾기'>
+          <MapPin className='w-5 h-5 text-blue-600' />
+          <span className='text-sm font-medium text-gray-700'>내 위치</span>
+        </button>
+
         <div>
           <MyMap mapRef={mapRef} places={places} />
         </div>
