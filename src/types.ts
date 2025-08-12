@@ -128,11 +128,42 @@ export interface PhotoDetailModalProps {
   onDelete: (id: string) => void;
 }
 
-export interface ErrorPageProps   {
-  errorCode : number;
-  message : string;
+export interface ErrorPageProps {
+  errorCode: number;
+  message: string;
 }
 
-export interface PrivateRouteProps  {
+export interface PrivateRouteProps {
   children: React.ReactNode;
+}
+
+// 검색 결과로 나올 유저 타입 (가정)
+export interface SearchUser {
+  user_id: number;
+  name: string;
+  profile_image?: string;
+}
+
+// 내 친구 목록 타입
+export interface Friend {
+  friend_id: number;
+  friend_name: string;
+  profile_image?: string;
+}
+
+// 보낸 친구 요청 타입
+export interface SentRequest {
+  friendship_id: number;
+  friend_id: number;
+  friend_name: string;
+  request_date: string;
+}
+
+// 받은 친구 요청 타입
+export interface ReceivedRequest {
+  friendship_id: number;
+  user_id: number;
+  name: string;
+  request_date: string;
+  profile_image?: string;
 }

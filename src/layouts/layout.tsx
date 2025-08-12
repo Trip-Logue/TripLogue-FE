@@ -1,4 +1,4 @@
-import { MainSidebar } from '@/assets/pages/mainSidebar';
+import { MainSidebar } from '@/pages/mainSidebar';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 import type { LayoutProps } from '@/types';

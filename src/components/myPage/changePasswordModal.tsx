@@ -21,7 +21,7 @@ export default function ChangePasswordModal({ onClose }: { onClose: () => void }
       return;
     }
     // 현재 비밀번호 확인 (실제 백엔드 연동 필요) 여기서는 예시를 위해 'correct_password'를 올바른 현재 비밀번호로 가정
-    if (currentPassword !== 'correct_password') {
+    if (currentPassword !== 'password') {
       // 'correct_password'를 실제 유효성 검사 로직으로 대체해야 함
       toast.error('현재 비밀번호가 올바르지 않습니다.');
       return;
