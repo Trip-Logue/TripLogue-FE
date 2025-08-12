@@ -29,7 +29,7 @@ export default function RecordModal({ open, onClose, onSubmit, selectedPlace }: 
   const handleFileUpload = (files: File[]) => {
     const imageFiles = files.filter(file => file.type.startsWith('image/'));
     
-    if (imageFiles.length === 0) {
+    if (!imageFiles) {
       alert('이미지 파일만 업로드 가능합니다.');
       return;
     }
