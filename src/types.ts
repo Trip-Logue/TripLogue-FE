@@ -28,7 +28,8 @@ export interface PlaceInfo {
   memo: string;
   title: string; // 제목 필드 추가
   country?: string; // 나라 이름 필드 추가 (마이페이지 차트 활용 위함)
-  imageUrls?: string[]; // 마커 인포윈도우에 표시할 이미지 URL들(썸네일은 첫 번째 사용)
+  photos?: Photo[]; // 사진 배열 추가
+  recordId?: string; // 여행 기록 ID 추가
 }
 
 export type MyMapProps = {
@@ -39,8 +40,23 @@ export type MyMapProps = {
 export interface RecordModalProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: { title: string; date: string; memo: string; images?: File[] }) => void;
-  selectedPlace: { name: string } | null;
+  selectedPlace: { name: string; location: google.maps.LatLng } | null;
+}
+
+// 여행 기록 데이터 타입 (사진 모아보기와 연동)
+export interface TravelRecordData {
+  id: string;
+  userId: string;
+  title: string;
+  date: string;
+  location: string;
+  latitude: number;
+  longitude: number;
+  country: string;
+  memo: string;
+  photos: Photo[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface PlaceAutocompleteProps {
@@ -70,10 +86,13 @@ export interface LayoutProps {
 
 export interface WithdrawalModalProps {
   onClose: () => void;
+  onConfirm?: () => void;
 }
 
 export interface UserProfileSectionProps {
   openEditProfile: () => void;
+  profileImageUrl?: string | null;
+  userName: string;
 }
 
 export interface AccountSettingsSectionProps {
@@ -85,12 +104,21 @@ export type TripCardProps = {
   title: string;
   date?: string;
   description?: string;
+  location?: string;
+  country?: string;
+  photoCount?: number;
 };
 
-export interface UserProfileSectionProps {
-  openEditProfile: () => void;
-  profileImageUrl?: string | null;
-  userName: string;
+export interface TravelSummarySectionProps {
+  travelRecords: TravelRecordData[];
+}
+
+export interface CountryChartSectionProps {
+  travelRecords: TravelRecordData[];
+}
+
+export interface MyTripListSectionProps {
+  travelRecords: TravelRecordData[];
 }
 
 export interface EditProfileModalProps {
@@ -115,6 +143,7 @@ export interface Photo {
   tags: string[];
   isFavorite: boolean;
   description?: string;
+  travelRecordId?: string; // 여행 기록과 연결
 }
 
 export interface PhotoDetailModalProps {
@@ -128,11 +157,52 @@ export interface PhotoDetailModalProps {
   onDelete: (id: string) => void;
 }
 
-export interface ErrorPageProps   {
-  errorCode : number;
-  message : string;
+export interface ErrorPageProps {
+  errorCode: number;
+  message: string;
 }
 
-export interface PrivateRouteProps  {
+export interface PrivateRouteProps {
   children: React.ReactNode;
+}
+
+// 사용자 정보 타입
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  profileImageUrl?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// 검색 결과로 나올 유저 타입 (가정)
+export interface SearchUser {
+  user_id: number;
+  name: string;
+  profile_image?: string;
+}
+
+// 내 친구 목록 타입
+export interface Friend {
+  friend_id: number;
+  friend_name: string;
+  profile_image?: string;
+}
+
+// 보낸 친구 요청 타입
+export interface SentRequest {
+  friendship_id: number;
+  friend_id: number;
+  friend_name: string;
+  request_date: string;
+}
+
+// 받은 친구 요청 타입
+export interface ReceivedRequest {
+  friendship_id: number;
+  user_id: number;
+  name: string;
+  request_date: string;
+  profile_image?: string;
 }
