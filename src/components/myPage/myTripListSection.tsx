@@ -11,7 +11,10 @@ import {
   ChevronLast,
 } from 'lucide-react';
 import TripCard from './tripCard';
+import EditTripModal from './EditTripModal'; // 수정
+import useTravelStore from '@/hooks/useTravelStore'; // 수정
 import type { TravelRecordData } from '@/types';
+import { toast } from 'react-toastify';
 
 interface MyTripListSectionProps {
   travelRecords: TravelRecordData[];
@@ -40,6 +43,8 @@ export default function MyTripListSection({
     recordId: string;
     recordTitle: string;
   } | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false); // 수정
+  const [editingRecord, setEditingRecord] = useState<TravelRecordData | null>(null); // 수정
 
   const handleDeleteClick = (recordId: string, recordTitle: string) => {
     setShowDeleteConfirm({ recordId, recordTitle });
@@ -51,6 +56,18 @@ export default function MyTripListSection({
       setShowDeleteConfirm(null);
     }
   };
+
+  // 수정 시작
+  const handleEditClick = (record: TravelRecordData) => {
+    setEditingRecord(record);
+    setIsEditModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsEditModalOpen(false);
+    setEditingRecord(null);
+  };
+  // 수정 끝
 
   const goToPage = (page: number) => {
     onPageChange(Math.max(1, Math.min(page, totalPages)));
@@ -92,6 +109,7 @@ export default function MyTripListSection({
             country={record.country}
             photoCount={record.photos.length}
             onDelete={() => handleDeleteClick(record.id, record.title)}
+            onEdit={() => handleEditClick(record)} // 수정
           />
         ))}
       </div>
@@ -196,6 +214,13 @@ export default function MyTripListSection({
           </div>
         </div>
       )}
+
+      {/* 수정 모달 */}
+      <EditTripModal
+        isOpen={isEditModalOpen}
+        onClose={handleCloseModal}
+        record={editingRecord}
+      />
     </div>
   );
 }

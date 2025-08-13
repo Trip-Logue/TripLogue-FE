@@ -4,6 +4,10 @@ import type { TravelRecordData, Photo } from '@/types';
 interface TravelState {
   travelRecords: TravelRecordData[];
   addRecord: (record: Omit<TravelRecordData, 'id' | 'createdAt' | 'updatedAt'>) => void;
+  updateRecord: (
+    recordId: string,
+    updatedData: Partial<Omit<TravelRecordData, 'id' | 'createdAt' | 'updatedAt'>>,
+  ) => void;
   addPhotoToRecord: (recordId: string, photo: Photo) => void;
   removePhotoFromRecord: (recordId: string, photoId: string) => void;
   getRecordsByUser: (userId: string) => TravelRecordData[];
@@ -11,6 +15,7 @@ interface TravelState {
   deleteRecord: (recordId: string) => void;
   deletePhoto: (photoId: string) => void;
   updatePhotoFavorite: (photoId: string, isFavorite: boolean) => void;
+  updatePhotoDetails: (recordId: string, photoId: string, updatedDetails: Partial<Photo>) => void;
 }
 
 const useTravelStore = create<TravelState>((set, get) => ({
@@ -26,6 +31,22 @@ const useTravelStore = create<TravelState>((set, get) => ({
 
     set((state) => {
       const updatedRecords = [...state.travelRecords, newRecord];
+      localStorage.setItem('travelRecords', JSON.stringify(updatedRecords));
+      return { travelRecords: updatedRecords };
+    });
+  },
+
+  updateRecord: (recordId, updatedData) => {
+    set((state) => {
+      const updatedRecords = state.travelRecords.map((record) =>
+        record.id === recordId
+          ? {
+              ...record,
+              ...updatedData,
+              updatedAt: new Date().toISOString(),
+            }
+          : record,
+      );
       localStorage.setItem('travelRecords', JSON.stringify(updatedRecords));
       return { travelRecords: updatedRecords };
     });
@@ -104,6 +125,25 @@ const useTravelStore = create<TravelState>((set, get) => ({
         ),
         updatedAt: new Date().toISOString(),
       }));
+      localStorage.setItem('travelRecords', JSON.stringify(updatedRecords));
+      return { travelRecords: updatedRecords };
+    });
+  },
+
+  updatePhotoDetails: (recordId, photoId, updatedDetails) => {
+    set((state) => {
+      const updatedRecords = state.travelRecords.map((record) => {
+        if (record.id === recordId) {
+          return {
+            ...record,
+            photos: record.photos.map((photo) =>
+              photo.id === photoId ? { ...photo, ...updatedDetails } : photo,
+            ),
+            updatedAt: new Date().toISOString(),
+          };
+        }
+        return record;
+      });
       localStorage.setItem('travelRecords', JSON.stringify(updatedRecords));
       return { travelRecords: updatedRecords };
     });

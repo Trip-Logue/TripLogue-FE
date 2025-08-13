@@ -147,12 +147,9 @@ export interface Photo {
 }
 
 export interface PhotoDetailModalProps {
-  photo: Photo;
+  initialPhoto: Photo;
+  photoList: Photo[];
   onClose: () => void;
-  onPrev: () => void;
-  onNext: () => void;
-  hasPrev: boolean;
-  hasNext: boolean;
   toggleFavorite: (id: string) => void;
   onDelete: (id: string) => void;
 }
