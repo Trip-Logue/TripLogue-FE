@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   X,
   ChevronLeft,
@@ -11,40 +11,72 @@ import {
   Tag,
   MessageCircle,
 } from 'lucide-react';
-import type { PhotoDetailModalProps } from '@/types';
+import type { Photo } from '@/types'; // 수정
 import { toast } from 'react-toastify';
 
+// 수정: Prop 타입 변경
+interface PhotoDetailModalProps {
+  initialPhoto: Photo;
+  photoList: Photo[];
+  onClose: () => void;
+  toggleFavorite: (id: string) => void;
+  onDelete: (id: string) => void;
+}
+
 export default function PhotoDetailModal({
-  photo,
+  initialPhoto,
+  photoList,
   onClose,
-  onPrev,
-  onNext,
-  hasPrev,
-  hasNext,
   toggleFavorite,
   onDelete,
 }: PhotoDetailModalProps) {
+  const [currentIndex, setCurrentIndex] = useState(() =>
+    photoList.findIndex((p) => p.id === initialPhoto.id),
+  );
+
+  // 현재 사진
+  const photo = photoList[currentIndex];
+
   const handleFavorite = () => {
+    if (!photo) return;
     toggleFavorite(photo.id);
     toast.success(photo.isFavorite ? '즐겨찾기에서 해제되었습니다.' : '즐겨찾기에 추가되었습니다.');
   };
 
   const handleDelete = () => {
+    if (!photo) return;
     if (window.confirm('정말 이 사진을 삭제하시겠습니까?')) {
       onDelete(photo.id);
-      toast.success('사진이 삭제되었습니다.');
+      // 모달은 onDelete 콜백을 호출한 후 외부에서 닫아줘야 함
     }
   };
+
+  const goToPrev = () => {
+    setCurrentIndex((prev) => (prev > 0 ? prev - 1 : prev));
+  };
+
+  const goToNext = () => {
+    setCurrentIndex((prev) => (prev < photoList.length - 1 ? prev + 1 : prev));
+  };
+
+  const hasPrev = currentIndex > 0;
+  const hasNext = currentIndex < photoList.length - 1;
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
-      if (e.key === 'ArrowLeft' && hasPrev) onPrev();
-      if (e.key === 'ArrowRight' && hasNext) onNext();
+      if (e.key === 'ArrowLeft' && hasPrev) goToPrev();
+      if (e.key === 'ArrowRight' && hasNext) goToNext();
     };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [onClose, onPrev, onNext, hasPrev, hasNext]);
+  }, [onClose, hasPrev, hasNext]);
+
+  // photo가 없을 경우 (예: 리스트에서 마지막 사진 삭제)
+  if (!photo) {
+    // 혹은 더 나은 fallback UI를 표시할 수 있습니다.
+    return null; 
+  }
 
   return (
     <div
@@ -69,7 +101,7 @@ export default function PhotoDetailModal({
         <div className='relative'>
           <img
             src={photo.src}
-            className='w-full h-auto max-h-[50vh] object-cover'
+            className='w-full h-auto max-h-[50vh] object-contain'
             alt={photo.title}
           />
 
@@ -153,7 +185,7 @@ export default function PhotoDetailModal({
         {/* 네비게이션 버튼 */}
         {hasPrev && (
           <button
-            onClick={onPrev}
+            onClick={goToPrev}
             className='absolute left-6 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm p-4 rounded-full shadow-xl hover:bg-white transition-all duration-200 group'>
             <ChevronLeft size={24} className='text-gray-700 group-hover:text-gray-900' />
           </button>
@@ -161,7 +193,7 @@ export default function PhotoDetailModal({
 
         {hasNext && (
           <button
-            onClick={onNext}
+            onClick={goToNext}
             className='absolute right-6 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm p-4 rounded-full shadow-xl hover:bg-white transition-all duration-200 group'>
             <ChevronRight size={24} className='text-gray-700 group-hover:text-gray-900' />
           </button>
