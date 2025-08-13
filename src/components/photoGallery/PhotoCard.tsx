@@ -56,7 +56,7 @@ export default function PhotoCard({ photo, onClick, onToggleFavorite, onDelete }
               <span
                 key={tag}
                 className='px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium'>
-                #{tag}
+                {tag}
               </span>
             ))}
           </div>
