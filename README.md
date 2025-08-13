@@ -133,7 +133,3 @@ VITE_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
 1. `src/types.ts`에서 타입 수정
 2. 관련 컴포넌트 업데이트
 3. 마이그레이션 로직 구현 (필요시)
-
-## 라이선스
-
-MIT License
