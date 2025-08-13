@@ -10,7 +10,6 @@ import {
   Filter,
   Calendar,
   MapPin,
-  Plus,
   ChevronDown,
   ChevronUp,
   Trash2,
@@ -624,10 +623,6 @@ export default function PhotoGalleryPage() {
                   <p className='mb-6 text-sm text-gray-400'>
                     지도에서 여행 기록을 추가하면 사진이 여기에 표시됩니다.
                   </p>
-                  <button className='px-6 py-3 bg-purple-500 text-white rounded-xl shadow-lg hover:bg-purple-600 transition-all duration-200 hover:shadow-xl flex items-center gap-2 mx-auto'>
-                    <Plus size={20} />
-                    여행 기록 추가하기
-                  </button>
                 </div>
               )}
             </div>
